@@ -2,7 +2,9 @@
 # @date 2022-11-04
 
 from random import random
+from math import sqrt
 
+import numpy
 
 class Point:
     def __init__(self, xcoord, ycoord):
@@ -41,16 +43,43 @@ The size of this rectangle can be adjusted with (x/y)(bottom/top)
     | param xbottom, xtop, ybottom, ytop: Confines of generatable points.
     | return Array of Edge objects.
 """
-def createRandomLines(amount, xbottom = -10, xtop=10, ybottom=-10, ytop=10):
+def createLinesRandom(amount, xbottom = -10, xtop=10, ybottom=-10, ytop=10):
     xsize = xtop-xbottom
     ysize = ytop - ybottom
     lines = []
-    for i in range(0,amount):
+    for i in range(amount):
         x1 = random()*xsize
         y1 = random()*ysize
         
         x2 = random()*xsize
         y2 = random()*ysize
+        lines.append(Edge(Point(x1,y1), Point(x2,y2)))
+    return lines
+
+def createLinesShort(amount, xsize, ysize, maxdistance):
+    lines = []
+    for i in range(amount):
+        x1 = random()*xsize
+        y1 = random()*ysize
+
+        while(True):
+            x2 = random()*xsize
+            y2 = random()*ysize
+
+            if(distance(Point(x1,y1),Point(x2,y2)) <= maxdistance):
+                break
+            
+        lines.append(Edge(Point(x1,y1), Point(x2,y2)))
+    return lines
+
+def createLinesNormal(amount, centerx, centery, stddev):
+    lines = []
+    for i in range(amount):
+        x1 = numpy.random.normal(centerx,stddev)
+        y1 = numpy.random.normal(centery,stddev)
+
+        x2 = numpy.random.normal(x1,stddev)
+        y2 = numpy.random.normal(y1,stddev)
         lines.append(Edge(Point(x1,y1), Point(x2,y2)))
     return lines
 
@@ -60,7 +89,6 @@ def createRandomLines(amount, xbottom = -10, xtop=10, ybottom=-10, ytop=10):
     |return The intersection as a Point object, or null.
 """
 def calculateIntersection(edge1, edge2):
-    
     i = edge1.pointA.xcoord
     
     def rico(edge):
@@ -86,3 +114,6 @@ def calculateIntersection(edge1, edge2):
         xvalue = (b2-b1)/(rico1-rico2)
         yvalue = rico1 * xvalue + b1
         return Point(xvalue,yvalue)
+
+def distance(point1, point2):
+    return sqrt( (point2[0]-point1[0])**2 + (point2[1]-point1[1])**2)

@@ -17,7 +17,7 @@ def simpleSweepline(lines):
             for active in status:
                 # For all elements of the status not equal to element just added
                 if not active is event.shape1:
-                    # Add 
+                    # Add intersection to list
                     intersections += calculateIntersection(event.shape1, active)
 
         if event.type == 3:
